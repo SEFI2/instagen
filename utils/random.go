@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"encoding/json"
 	"fmt"
 	"image"
 	"io/ioutil"
@@ -11,16 +12,57 @@ import (
 	"time"
 )
 
+// ImageFromUrl
 func ImageFromUrl(url string) (image.Image, error) {
 	img, _ := os.Create("image.jpg")
 	defer img.Close()
 
-	resp, _ := http.Get(url)
-	defer resp.Body.Close()
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
 	im, _, err := image.Decode(resp.Body)
+	if err := resp.Body.Close(); err != nil {
+		return nil, err
+	}
+
 	return im, err
 }
 
+// RandomSquareImage
+func RandomSquareImage(keyword string) (image.Image, error) {
+	url, err := GenerateRandomSquareImageUrl(keyword)
+	if err != nil {
+		return nil, err
+	}
+	return ImageFromUrl(url)
+}
+
+// GenerateRandomSquareImageUrl
+func GenerateRandomSquareImageUrl(keyword string) (string, error) {
+	accessKey := "w-skuXJfa51crHs_LV53C0rCjWboXD-G0b734w3EoRE"
+	orientation := "squarish"
+	query := keyword
+	url := fmt.Sprintf("https://api.unsplash.com/photos/random?client_id=%s&orientation=%s&query=%s", accessKey, orientation, query)
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp.Body)
+	decoder := json.NewDecoder(resp.Body)
+	var data struct {
+		Urls struct {
+			Regular string
+		}
+	}
+	if err = decoder.Decode(&data); err != nil {
+		return "", err
+	}
+	return data.Urls.Regular, nil
+}
+
+// GenerateRandomImageUrl
 func GenerateRandomImageUrl(keyword string) (string, error) {
 	url := fmt.Sprintf("https://www.google.com/search?q=%s&tbm=isch", keyword)
 

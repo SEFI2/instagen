@@ -1,12 +1,25 @@
 package utils
 
-import "github.com/SEFI2/instagen/image"
+import (
+	"github.com/SEFI2/instagen/image"
+)
 
-func CreateInstagramPost(title, content, author,  backgroundPath, outputPath string) error {
+func CreateInstagramPost(title, content, author, outputPath string) error {
+	// Randomly choose background image
+	// seed := rand.NewSource(time.Now().UnixNano())
+	// random := rand.New(seed)
+	// backgroundPath := fmt.Sprintf("BackgroundImage/Square/land%d.jpg", random.Int() % 40)
+
+	// Get instagram post size
 	width, height := image.InstagramSquarePostSize()
 	image := image.NewImage(width, height)
 
-	if err := image.LoadBackgroundFromPath(backgroundPath); err != nil {
+	background, err := RandomSquareImage("")
+	if err != nil {
+		return err
+	}
+
+	if err := image.LoadBackground(background); err != nil {
 		return err
 	}
 

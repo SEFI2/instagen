@@ -1,17 +1,22 @@
 package image
 
 import (
+	"fmt"
 	"github.com/disintegration/imaging"
 	"github.com/fogleman/gg"
+
 	"image"
 	"image/color"
+	"path"
 	"path/filepath"
+	"runtime"
 )
 
 type Image struct {
 	context *gg.Context
 	margin float64
 	background image.Image
+	curDir string
 }
 
 func InstagramStorySize() (int, int) {
@@ -32,7 +37,13 @@ func InstagramPortraitPostSize() (int, int) {
 
 func NewImage(width, height int) *Image {
 	c := gg.NewContext(width, height)
-	return &Image{context: c, margin: 0}
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("No caller information")
+	}
+	fmt.Printf("Filename : %q, Dir : %q\n", filename, path.Dir(filename))
+	curDir := path.Dir(filename)
+	return &Image{context: c, margin: 0, curDir: curDir}
 }
 
 
@@ -55,15 +66,15 @@ func (i *Image) GenerateOverlay(margin float64) error {
 	x, y := margin, margin
 	w := float64(i.context.Width()) - (2.0 * margin)
 	h := float64(i.context.Height()) - (2.0 * margin)
-	i.context.SetColor(color.RGBA{A: 150})
+	i.context.SetColor(color.RGBA{A: 140})
 	i.context.DrawRectangle(x, y, w, h)
 	i.context.Fill()
 	return nil
 }
 
 func (i *Image) AddTitleText(title string) error {
-	textColor := color.White
-	fontPath := filepath.Join("image/Roboto", "Roboto-Bold.ttf")
+	textColor := color.RGBA{R: 250, G: 150, A: 240}
+	fontPath := filepath.Join(i.curDir, "Roboto", "Roboto-Bold.ttf")
 	if err := i.context.LoadFontFace(fontPath, 30); err != nil {
 		return err
 	}
@@ -77,12 +88,12 @@ func (i *Image) AddTitleText(title string) error {
 }
 
 func (i *Image) AddContentText(content string) error {
-	if len(content) > 300 {
-		content = content[0:300]
+	if len(content) > 500 {
+		content = content[0:500]
 	}
 	textColor := color.White
-	fontPath := filepath.Join("image/Roboto", "Roboto-Bold.ttf")
-	if err := i.context.LoadFontFace(fontPath, 60); err != nil {
+	fontPath := filepath.Join(i.curDir, "Roboto", "Roboto-Bold.ttf")
+	if err := i.context.LoadFontFace(fontPath, 40); err != nil {
 		return err
 	}
 	textRightMargin := 6 * i.margin
@@ -95,11 +106,11 @@ func (i *Image) AddContentText(content string) error {
 }
 
 func (i *Image) AddAuthorText(author string) error {
-	fontPath := filepath.Join("image/Roboto", "Roboto-Bold.ttf")
-	if err := i.context.LoadFontFace(fontPath, 80); err != nil {
+	fontPath := filepath.Join(i.curDir, "Roboto", "Roboto-Bold.ttf")
+	if err := i.context.LoadFontFace(fontPath, 75); err != nil {
 		return err
 	}
-	i.context.SetColor(color.RGBA{G: 255, A: 200})
+	i.context.SetColor(color.RGBA{G: 205, A: 200})
 	textWidth, textHeight := i.context.MeasureString(author)
 	x := float64(i.context.Width()) - textWidth - 2 * i.margin
 	y := float64(i.context.Height()) - textHeight - 2 * i.margin
