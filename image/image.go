@@ -6,9 +6,7 @@ import (
 
 	"image"
 	"image/color"
-	"path"
 	"path/filepath"
-	"runtime"
 )
 
 type Image struct {
@@ -36,12 +34,14 @@ func InstagramPortraitPostSize() (int, int) {
 
 func NewImage(width, height int) *Image {
 	c := gg.NewContext(width, height)
-	_, filename, _, ok := runtime.Caller(0)
+	/*_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		panic("No caller information")
 		return nil
 	}
 	curDir := path.Dir(filename)
+	*/
+	curDir := "./"
 	return &Image{context: c, margin: 0, curDir: curDir}
 }
 
