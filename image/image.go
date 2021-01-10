@@ -1,7 +1,6 @@
 package image
 
 import (
-	"fmt"
 	"github.com/disintegration/imaging"
 	"github.com/fogleman/gg"
 
@@ -40,8 +39,8 @@ func NewImage(width, height int) *Image {
 	_, filename, _, ok := runtime.Caller(0)
 	if !ok {
 		panic("No caller information")
+		return nil
 	}
-	fmt.Printf("Filename : %q, Dir : %q\n", filename, path.Dir(filename))
 	curDir := path.Dir(filename)
 	return &Image{context: c, margin: 0, curDir: curDir}
 }
@@ -88,12 +87,12 @@ func (i *Image) AddTitleText(title string) error {
 }
 
 func (i *Image) AddContentText(content string) error {
-	if len(content) > 500 {
-		content = content[0:500]
+	if len(content) > 450 {
+		content = content[0:450]
 	}
 	textColor := color.White
 	fontPath := filepath.Join(i.curDir, "Roboto", "Roboto-Bold.ttf")
-	if err := i.context.LoadFontFace(fontPath, 40); err != nil {
+	if err := i.context.LoadFontFace(fontPath, 45); err != nil {
 		return err
 	}
 	textRightMargin := 6 * i.margin

@@ -49,7 +49,6 @@ func GenerateRandomSquareImageUrl(keyword string) (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
-	fmt.Println(resp.Body)
 	decoder := json.NewDecoder(resp.Body)
 	var data struct {
 		Urls struct {
