@@ -41,7 +41,7 @@ func NewImage(width, height int) *Image {
 	}
 	curDir := path.Dir(filename)
 	*/
-	curDir := "./"
+	curDir := ""
 	return &Image{context: c, margin: 0, curDir: curDir}
 }
 
@@ -65,7 +65,7 @@ func (i *Image) GenerateOverlay(margin float64) error {
 	x, y := margin, margin
 	w := float64(i.context.Width()) - (2.0 * margin)
 	h := float64(i.context.Height()) - (2.0 * margin)
-	i.context.SetColor(color.RGBA{A: 140})
+	i.context.SetColor(color.RGBA{A: 170})
 	i.context.DrawRectangle(x, y, w, h)
 	i.context.Fill()
 	return nil
@@ -123,4 +123,8 @@ func (i *Image) Save(path string) error {
 		return err
 	}
 	return nil
+}
+
+func (i *Image) GetImage() image.Image {
+	return i.context.Image()
 }

@@ -40,7 +40,7 @@ func RandomSquareImage(keyword string) (image.Image, error) {
 
 // GenerateRandomSquareImageUrl
 func GenerateRandomSquareImageUrl(keyword string) (string, error) {
-	accessKey := "w-skuXJfa51crHs_LV53C0rCjWboXD-G0b734w3EoRE"
+	accessKey := "YytqYBPqY01hU1E7IFNG-1X_XtVRGOcvve0bmh6aECw"
 	orientation := "squarish"
 	query := keyword
 	url := fmt.Sprintf("https://api.unsplash.com/photos/random?client_id=%s&orientation=%s&query=%s", accessKey, orientation, query)
